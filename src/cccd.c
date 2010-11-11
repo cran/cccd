@@ -1,26 +1,17 @@
 
-/* This software developed by David Marchette
- * Naval Surface Warfare Center, Dahlgren
- * Division, Code B10.  It may be freely used and 
- * modified. All warranties, express or implied, are
- * disclaimed. 
- */
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include <values.h>
+#include <float.h>
 
 #define MIN(x,y) (((x)<(y))?(x):(y))
-
-/* sorts biggest to smallest */
-extern int cmp(const void *x, const void *y);
+#ifndef MAXFLOAT
+#define MAXFLOAT 10E20
+#endif
 
 /* sorts smallest to biggest */
 extern int cmp1(const void *x, const void *y);
-
-/* sorts smallest to biggest */
-extern int cmp2(const void *x, const void *y);
 
 /* 
  * DX is nx by nx
@@ -40,24 +31,21 @@ void cccd(double *DX,            /* distances between x and x */
 			   int *SHRINK,      /* shrink the radii back to first covered x */
 			   int *VERBOSE)
 {
-   int i,j,k,l;
+   int i,j,k;
    int nx=*NX;
    int ny=*NY;
-   double **dx;
    double *dy;
    int *covered;
    double *p;
    int verbose=*VERBOSE;
-   int num;
-   int maxn,ind;
    double maxxd;
    double temp;
-   int kk;
    int shrink=*SHRINK;
 
 
    k = *K;
 
+	if(verbose) fprintf(stderr,"running cccd\n");
    dy = (double *)calloc(ny,sizeof(double));
    p = DY;
    for(i=0;i<nx;i++){
@@ -94,6 +82,7 @@ void cccd(double *DX,            /* distances between x and x */
 	  }
 	  p += ny;
    }
+	if(verbose) fprintf(stderr,"done\n");
    free(dy);
 }
 

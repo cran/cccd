@@ -1,10 +1,3 @@
-
-/* This software developed by David Marchette
- * Naval Surface Warfare Center, Dahlgren
- * Division, Code B10.  It may be freely used and 
- * modified. All warranties, express or implied, are
- * disclaimed. 
- */
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>

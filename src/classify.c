@@ -1,10 +1,3 @@
-
-/* This software developed by David Marchette
- * Naval Surface Warfare Center, Dahlgren
- * Division, Code B10.  It may be freely used and 
- * modified. All warranties, express or implied, are
- * disclaimed. 
- */
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -26,7 +19,6 @@ void classify_andromeda_class(
    int i,j;
    int n=*N;                    /* number of observations */
    int nw=*NW;                  /* number of witnesses    */
-   double **dists;              /* D as an nxn matrix     */
    double *d;                   /* temporary pointer      */
    int *di;                     /* temporary pointer      */
    double maxr=*MAXR;
