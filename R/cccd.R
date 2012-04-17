@@ -1,47 +1,34 @@
-cccd <- function(x=NULL,y=NULL,dxx=NULL,dyx=NULL,p=2,d=2)
+cccd <- function(x=NULL,y=NULL,dxx=NULL,dyx=NULL,method=NULL)
 {
    if(is.null(dxx) | is.null(dyx)){
 		if(is.null(x) | is.null(y)) stop("either x,y or dxx,dyx must be given")
-		if(missing(d)){
-			if(is.matrix(x)){
-			   d <- ncol(x)
-			}
-			else if(is.matrix(y)){
-			   d <- ncol(y)
-			}
-			else d <- 1
-		}
-      dyx <- pdist(y,x,p=p,d=d)
-      dxx <- pdist(x,p=p,d=d)
+      dyx <- as.matrix(dist(y,x,method=method))
+      dxx <- as.matrix(dist(x,method=method))
    }
    R <- apply(dyx,2,min)
 	M <- matrix(as.integer(dxx<R),length(R))
 	diag(M) <- 0
 	g <- graph.adjacency(M,mode="directed")
 	g$R <- R
-	if(d==1) {
+	if(is.vector(x) || (dim(x)==1)) {
 		x <- cbind(x,rep(0,length(x)))
 		y <- cbind(y,rep(0,length(y)))
 	}
 	g$layout <- x
 	g$Y <- y
+	g$method <- method
+	class(g) <- c("cccd",class(g))
 	g
 }
 
-cccd.rw <- function(x=NULL,y=NULL,dxx=NULL,dyx=NULL,p=2,d=2,m=1)
+cccd.rw <- function(x=NULL,y=NULL,dxx=NULL,dyx=NULL,method=NULL,m=1,d=2)
 {
    if(is.null(dxx) | is.null(dyx)){
 		if(is.null(x) | is.null(y)) stop("either x,y or dxx,dyx must be given")
-		if(is.matrix(x)){
-			dim <- ncol(x)
-		}
-		else if(is.matrix(y)){
-			dim <- ncol(y)
-		}
-		else dim <- 1
-      dyx <- pdist(y,x,p=p,d=dim)
-      dxx <- pdist(x,p=p,d=dim)
-   }
+      dyx <- as.matrix(dist(y,x,method=method))
+      dxx <- as.matrix(dist(x,method=method))
+		d <- ncol(x)
+	} 
    R <- rep(0,nrow(dxx))
 	nx <- nrow(dxx)
 	ny <- nrow(dyx)
@@ -57,10 +44,13 @@ cccd.rw <- function(x=NULL,y=NULL,dxx=NULL,dyx=NULL,p=2,d=2,m=1)
 	g$R <- R
 	g$layout <- x
 	g$Y <- y
+	g$method <- method
+	class(g) <- c("cccd",class(g))
 	g
 }
 
-plotCCCD <- function(g,plot.circles=FALSE,dominate.only=FALSE,D=NULL,
+plot.cccd <- function(x,...,
+                     plot.circles=FALSE,dominate.only=FALSE,D=NULL,
 							vertex.size=2,vertex.label=NA,
 							vertex.color="SkyBlue2",dom.color="Blue",
                      ypch=20,
@@ -69,9 +59,11 @@ plotCCCD <- function(g,plot.circles=FALSE,dominate.only=FALSE,D=NULL,
 							balls=FALSE,
 							ball.color=gray(.8),
 							square=FALSE,
-							xlim,ylim,
-							...)
+							xlim,ylim)
+
 {
+	g <- x
+	class(g) <- "igraph"
 	if(balls) plot.circles <- TRUE
 	x <- g$layout
 	n <- nrow(x)
@@ -110,30 +102,31 @@ plotCCCD <- function(g,plot.circles=FALSE,dominate.only=FALSE,D=NULL,
 	           vertex.label=vertex.label,
 				  vertex.color=vertex.color,...)
 	if(plot.circles){
-		col <- rep(NA,n)
-		if(balls){
-		   col <- rep(ball.color,n)
-		}
+		col <- rep(ifelse(balls,ball.color,vertex.color),n)
 		if(dominate.only){
 		   col[-D] <- NA
 		}
 		for(i in 1:nrow(x)){
-			if(!is.na(col[i]))
-				draw.circle(x[i,1],x[i,2],r[i],border=vertex.color[i],col=col[i])
+			if(!is.na(col[i])){
+				if(balls){
+					draw.circle(x[i,1],x[i,2],r[i],border=vertex.color[i],col=col[i])
+				} else {
+					draw.circle(x[i,1],x[i,2],r[i],border=col[i])
+				}
+			}
 		}
-		for(i in 1:nrow(x)){
-			draw.circle(x[i,1],x[i,2],r[i],border=vertex.color[i])
+		if(balls){
+			plot(g,xlim=xlim,ylim=ylim,vertex.size=vertex.size,rescale=FALSE,
+						  vertex.label=vertex.label,
+						  vertex.color=vertex.color,add=TRUE,...)
 		}
-		plot(g,xlim=xlim,ylim=ylim,vertex.size=vertex.size,rescale=FALSE,
-					  vertex.label=vertex.label,
-					  vertex.color=vertex.color,add=TRUE,...)
 	}
 	if(!is.null(y)){
 		points(y,pch=ypch,col=ycol,cex=ycex)
 	}
 }
 
-cccd.classifier <- function(x,y)
+cccd.classifier <- function(x,y,method=NULL)
 {
 	if(missing(y)){
 	   if(is.list(x)){
@@ -145,8 +138,8 @@ cccd.classifier <- function(x,y)
 		else
 			stop("must provide either x and y or a list with attributes x and y")
 	}
-   Gx <- cccd(x,y)
-	Gy <- cccd(y,x)
+   Gx <- cccd(x,y,method=method)
+	Gy <- cccd(y,x,method=method)
 	Dx <- dominate(Gx)
 	Dy <- dominate(Gy)
 	list(Rx=Gx$R[Dx],Ry=Gy$R[Dy],Cx=matrix(x[Dx,],ncol=ncol(x)),Cy=matrix(y[Dy,],ncol=ncol(y)))
@@ -171,10 +164,10 @@ cccd.classifier.rw <- function(x,y,m=1,d=2)
 	list(Rx=Gx$R[Dx],Ry=Gy$R[Dy],Cx=matrix(x[Dx,],ncol=ncol(x)),Cy=matrix(y[Dy,],ncol=ncol(y)))
 }
 
-cccd.classify <- function(data,C)
+cccd.classify <- function(data,C,method=NULL)
 {
-	dx <- apply(t(t(pdist(data,C$Cx))/C$Rx),1,min)
-	dy <- apply(t(t(pdist(data,C$Cy))/C$Ry),1,min)
+	dx <- apply(t(t(as.matrix(dist(data,C$Cx,method=method)))/C$Rx),1,min)
+	dy <- apply(t(t(as.matrix(dist(data,C$Cy,method=method)))/C$Ry),1,min)
 	dx<dy
 }
 
@@ -198,14 +191,14 @@ cccd.multiclass.classifier <- function(data,classes)
 	list(G=G,D=D,C=C,R=R,classes=cls)
 }
 
-cccd.multiclass.classify <- function(data,C)
+cccd.multiclass.classify <- function(data,C,method=NULL)
 {
 	nc <- length(C$R)
 	if(is.vector(data)) data <- matrix(data,nrow=1)
 	d <- matrix(0,nrow=nc,ncol=nrow(data))
 	classes <- C$classes
 	for(i in 1:nc){
-		d[i,] <- apply(t(t(pdist(data,C$C[[i]]))/C$R[[i]]),1,min)
+		d[i,] <- apply(t(t(as.matrix(dist(data,C$C[[i]],method=method)))/C$R[[i]]),1,min)
 	}
 	z <- t(apply(d,2,function(x)x/sum(x)))
 	list(probs=z,classes=classes[apply(z,1,which.min)])

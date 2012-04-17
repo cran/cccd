@@ -7,12 +7,13 @@
   contains no other points.
 }
 \usage{
-gg(x, r = 1, p = 2, usedeldir = TRUE)
+gg(x, r = 1, method = NULL, usedeldir = TRUE)
 }
 \arguments{
   \item{x}{ a matrix of observations.}
   \item{r}{ a multiplier on the ball radius.}
-  \item{p}{ the value of p in the \eqn{L_p} distance.}
+  \item{method}{ the method used for the distance. 
+     See \code{\link[proxy]{dist}}}
   \item{usedeldir}{logical. Whether to use the deldir package or not.}
 }
 \details{
@@ -35,7 +36,7 @@ John Wiley & Sons, 2004.
 }
 \author{ David J. Marchette}
 
-\seealso{ \code{\link{rng}}}
+\seealso{ \code{\link{rng}}, \code{\link[proxy]{dist}}}
 
 \examples{
 x <- matrix(runif(100),ncol=2)
@@ -46,5 +47,4 @@ plot(g)
 }
 
 }
-\keyword{ math }% at least one, from doc/KEYWORDS
-\keyword{ multivariate }% __ONLY ONE__ keyword per line
+\keyword{ graphs }

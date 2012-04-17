@@ -9,7 +9,7 @@ a resampled version of the CCCD classifier.
 }
 \usage{
 juggle(data, classes, sampled = TRUE, sample.dim = FALSE, 
-       num = 100, sample.proportion = 0.1, k = 2)
+       num = 100, sample.proportion = 0.1, k = 2, method = NULL)
 juggle.classify(data,J,tdata,indices)
 }
 \arguments{
@@ -43,6 +43,8 @@ the juggled classifier.
   \item{indices}{
 the indices of the juggles to use.
 }
+  \item{method}{ the method used for the distance. 
+     See \code{\link[proxy]{dist}}}
 }
 \details{
 The idea of juggling is to sample the data, compute a CCCD classifier,
@@ -68,7 +70,6 @@ David J. Marchette, david.marchette@navy.mil
 }
 
 \seealso{
-\code{\link{cccd}}
+\code{\link{cccd}}, \code{\link[proxy]{dist}}
 }
-\keyword{ math }
-\keyword{ multivariate }
+\keyword{ graphs }

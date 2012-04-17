@@ -6,14 +6,15 @@
    the relative neighborhood graph defined by a set of points.
 }
 \usage{
-rng(x=NULL, dx=NULL, r = 1, p = 2, usedeldir=TRUE)
+rng(x=NULL, dx=NULL, r = 1, method = NULL, usedeldir=TRUE)
 }
 %- maybe also `usage' for other objects documented here.
 \arguments{
   \item{x}{ a data matrix. Either \code{x} or \code{dx} must be provided.}
   \item{dx}{ an interpoint distance matrix.}
   \item{r}{ a multiplier to grow the balls.}
-  \item{p}{ the value of p in the \eqn{L_p} distance.}
+  \item{method}{ the method used for the distance. 
+     See \code{\link[proxy]{dist}}}
   \item{usedeldir}{a logical. If true and the data are two dimensional
         and the deldir package is installed, the Delaunay triangularization
 		  is first computed, and this is used to compute the relative
@@ -50,7 +51,9 @@ John Wiley & Sons, 2004.
 }
 \author{ David J. Marchette david.marchette@navy.mil}
 
-\seealso{\code{\link{gg}},\code{\link{cccd}},\code{\link{ccd}}}
+\seealso{\code{\link{gg}},\code{\link{cccd}},\code{\link{ccd}},
+\code{\link[proxy]{dist}}
+}
 
 \examples{
 x <- matrix(runif(100),ncol=2)
@@ -61,4 +64,4 @@ plot(g)
 }
 
 }
-\keyword{ math }
+\keyword{ graphs }

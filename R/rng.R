@@ -1,8 +1,8 @@
-rng <- function(x=NULL,dx=NULL,r=1, p=2,usedeldir=TRUE)
+rng <- function(x=NULL,dx=NULL,r=1, method=NULL,usedeldir=TRUE)
 {
    if(is.null(dx)) {
 	  if(is.null(x)) stop("One of x or dx must be given.")
-	  dx <- pdist(x,p=p)
+	  dx <- as.matrix(dist(x,method=method))
    }
    n <- nrow(dx)
    A <- matrix(0,nrow=n,ncol=n)
@@ -37,7 +37,6 @@ rng <- function(x=NULL,dx=NULL,r=1, p=2,usedeldir=TRUE)
 	out <- graph.adjacency(A,mode="undirected")
 	out$layout <- x
 	out$r <- r
-	out$p <- p
    out
 }
 

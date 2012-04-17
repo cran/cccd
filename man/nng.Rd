@@ -6,14 +6,15 @@
   (di)graphs.
 }
 \usage{
-nng(x = NULL, dx = NULL, k = 1, mutual = FALSE, p = 2)
+nng(x = NULL, dx = NULL, k = 1, mutual = FALSE, method = NULL)
 }
 \arguments{
   \item{x}{ a data matrix. Either x or dx is required}
   \item{dx}{ interpoint distance matrix}
   \item{k}{ number of neighbors}
   \item{mutual}{ logical. if true the neighbors must be mutual. See details.}
-  \item{p}{ the value of p in the \eqn{L_p} distance.}
+  \item{method}{ the method used for the distance. 
+     See \code{\link[proxy]{dist}}}
 }
 \details{
  a k-nearest neighbor graph is a digraph where each vertex is
@@ -33,6 +34,8 @@ D.J. Marchette, Random Graphs for Statistical Pattern Recognition,
 John Wiley & Sons, 2004.
 }
 \author{ David J. Marchette david.marchette@navy.mil}
+\seealso{\code{\link[proxy]{dist}}
+}
 
 \examples{
 
@@ -57,8 +60,8 @@ plot(G5)
 G5m <- nng(x,k=5,mutual=TRUE)
 \dontrun{
 plot(G5m)
+par(mfrow=c(1,1))
 }
 
 }
-\keyword{ math }
-\keyword{ multivariate }
+\keyword{ graphs }

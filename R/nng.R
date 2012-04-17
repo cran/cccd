@@ -1,9 +1,9 @@
 
-nng <- function(x=NULL,dx=NULL,k=1,mutual=FALSE,p=2)
+nng <- function(x=NULL,dx=NULL,k=1,mutual=FALSE,method=NULL)
 {
    if(is.null(dx)) {
 	  if(is.null(x)) stop("one of x or dx must be given")
-	  dx <- pdist(x,p=p)
+	  dx <- as.matrix(dist(x,method=method))
    }
    n <- nrow(dx)
    A <- matrix(0,nrow=n,ncol=n)
@@ -24,7 +24,6 @@ nng <- function(x=NULL,dx=NULL,k=1,mutual=FALSE,p=2)
 		out <- graph.adjacency(A,mode="directed")
 	out$k <- k
 	out$mutual <- mutual
-	out$p <- p
 	out$layout <- x
    out
 }

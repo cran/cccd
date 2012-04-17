@@ -29,4 +29,4 @@ prune(x, classes, prox = "Gabriel", ignore.ties = TRUE, ...)
 \references{ \url{http://www.bic.mni.mcgill.ca/users/crisco/pgedit/}}
 \author{ David J. Marchette, david.marchette@navy.mil}
 
-\keyword{ math }% at least one, from doc/KEYWORDS
+\keyword{ graphs }

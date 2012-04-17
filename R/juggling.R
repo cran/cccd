@@ -1,5 +1,5 @@
 juggle1 <- function(data,classes,sampled=TRUE,
-                   num=100,sample.proportion=0.1)
+                   num=100,sample.proportion=0.1,method=NULL)
 {
 	if(sample.proportion<1.0) sampled<-TRUE
 	replace <- sample.proportion>=1
@@ -9,7 +9,7 @@ juggle1 <- function(data,classes,sampled=TRUE,
 		d <- ncol(data)
 	}
 	else d <- 1
-	dxx <- pdist(data,p=2,d=d)
+	dxx <- as.matrix(dist(data,method=method))
 	n <- nrow(dxx)
 	S <- list(0)
 	R <- list(0)
@@ -25,9 +25,9 @@ juggle1 <- function(data,classes,sampled=TRUE,
 			}
 		}
 		for(j in cls){
-			DXX <- dxx[xindex[[j]],xindex[[j]]]
+			DXX <- dxx[xindex[[j]],xindex[[j]],drop=FALSE]
 			ind <- setdiff(unlist(xindex),xindex[[j]])
-			DYX <- dxx[ind,xindex[[j]]]
+			DYX <- dxx[ind,xindex[[j]],drop=FALSE]
 			rx <- apply(DYX,2,min)
 			A <- matrix(as.integer(DXX<rx),nrow=nrow(DXX))
 			diag(A) <- 0
@@ -37,7 +37,7 @@ juggle1 <- function(data,classes,sampled=TRUE,
 			R[[i]][[j]] <- rx[sx]
 		}
 	}
-	list(S=S,R=R,dimension=d)
+	list(S=S,R=R,dimension=d,method=method)
 }
 
 juggle1.classify <- function(data,J,tdata,indices)
@@ -51,10 +51,7 @@ juggle1.classify <- function(data,J,tdata,indices)
 	nc <- length(J$S[[1]])
 	out <- matrix(0,nrow=N,ncol=nc)
 	inds <- sort(unique(unlist(J$S)))
-	if(J$dimension>1)
-		d <- pdist(data,tdata[inds,],d=J$dimension)
-	else
-		d <- pdist(data,tdata[inds],d=1)
+	d <- as.matrix(dist(data,tdata[inds,,drop=FALSE],method=J$method))
 	foo <- matrix(0,nrow=nc,ncol=N)
 	for(i in indices){
 		for(j in 1:nc){
@@ -76,7 +73,7 @@ juggle1.classify <- function(data,J,tdata,indices)
 
 juggle2 <- function(data,classes,sampled=TRUE,
                    num=100,sample.proportion=0.1,
-						 k=2)
+						 k=2,method=NULL)
 {
 	if(sample.proportion<1.0) sampled<-TRUE
 	replace <- sample.proportion>=1
@@ -107,7 +104,7 @@ juggle2 <- function(data,classes,sampled=TRUE,
 		   K <- rbinom(1,d,.5)
 		}
 		vars[[i]] <- sample(1:d,K)
-		dxx <- pdist(data[,vars[[i]]],p=2,d=K)
+		dxx <- as.matrix(dist(data[,vars[[i]],drop=FALSE],method=method))
 		for(j in cls){
 			DXX <- dxx[xindex[[j]],xindex[[j]]]
 			ind <- setdiff(unlist(xindex),xindex[[j]])
@@ -121,7 +118,7 @@ juggle2 <- function(data,classes,sampled=TRUE,
 			R[[i]][[j]] <- rx[sx]
 		}
 	}
-	list(S=S,R=R,dimension=d,vars=vars)
+	list(S=S,R=R,dimension=d,vars=vars,method=method)
 }
 
 juggle2.classify <- function(data,J,tdata,indices)
@@ -137,7 +134,7 @@ juggle2.classify <- function(data,J,tdata,indices)
 	inds <- sort(unique(unlist(J$S)))
 	foo <- matrix(0,nrow=nc,ncol=N)
 	for(i in indices){
-		d <- pdist(data[,J$vars[[i]]],tdata[inds,J$vars[[i]]],d=length(J$vars[[i]]))
+		d <- as.matrix(dist(data[,J$vars[[i]],drop=FALSE],tdata[inds,J$vars[[i]],drop=FALSE],method=J$method))
 		for(j in 1:nc){
 			if(length(J$S[[i]][[j]])>1)
 				if(N==1)
@@ -158,11 +155,11 @@ juggle2.classify <- function(data,J,tdata,indices)
 
 juggle <- function(data,classes,sampled=TRUE,sample.dim=FALSE,
                    num=100,sample.proportion=0.1,
-						 k=2)
+						 k=2,method=NULL)
 {
    if(sample.dim) a <- juggle2(data,classes,sampled,num,
-	                            sample.proportion,k)
-   else a <- juggle1(data,classes,sampled,num,sample.proportion) 
+	                            sample.proportion,k,method=method)
+   else a <- juggle1(data,classes,sampled,num,sample.proportion,method=method) 
 	a
 }
 

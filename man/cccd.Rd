@@ -6,6 +6,7 @@
 \alias{cccd.classifier.rw}
 \alias{cccd.multiclass.classifier}
 \alias{cccd.multiclass.classify}
+\alias{plot.cccd}
 \title{
 Class Cover Catch Digraph
 }
@@ -13,30 +14,55 @@ Class Cover Catch Digraph
 Constructs a class cover catch digraph from points or interpoint distance matrices.
 }
 \usage{
-cccd(x = NULL, y = NULL, dxx = NULL, dyx = NULL, p = 2, d = 2)
-cccd.rw(x=NULL,y=NULL,dxx=NULL,dyx=NULL,p=2,d=2,m=1)
-cccd.classifier(x,y)
-cccd.classify(data, C)
+cccd(x = NULL, y = NULL, dxx = NULL, dyx = NULL, method = NULL)
+cccd.rw(x=NULL,y=NULL,dxx=NULL,dyx=NULL,method=NULL,m=1,d=2)
+cccd.classifier(x,y,method=NULL)
+cccd.classify(data, C,method=NULL)
 cccd.classifier.rw(x,y,m=1,d=2)
 cccd.multiclass.classifier(data, classes)
-cccd.multiclass.classify(data,C)
+cccd.multiclass.classify(data,C,method=NULL)
+\method{plot}{cccd}(x, ..., plot.circles = FALSE, dominate.only = FALSE, 
+          D = NULL, vertex.size = 2, vertex.label = NA, 
+			 vertex.color = "SkyBlue2", dom.color = "Blue", 
+			 ypch = 20, ycex = 1.5, ycol = 2, 
+			 use.circle.radii = FALSE, balls = FALSE, 
+			 ball.color = gray(0.8), square = FALSE, xlim, ylim)
 }
 \arguments{
     \item{x,y}{
 	    the target class and non-target class points. Either x,y
-		 or dxx,dyx must be provided.
+		 or dxx,dyx must be provided. In the case of \code{plot}, x is
+		 an object of class cccd.
     }
     \item{dxx,dyx}{
 	    interpoint distances (x against x and y against x). If these
 		 are not provided they are computed using x and y.
     }
-	 \item{p}{
-	    p in the \eqn{L_p} distance, if \code{dxx} or \code{dyx} are missing.}
-	 \item{d}{dimension of the data.}
+  \item{method}{ the method used for the distance. 
+     See \code{\link[proxy]{dist}}.}
 	 \item{m}{slope of the null hypothesis curve}
 	 \item{data}{data to be classified}
+	 \item{d}{dimension of the data}
 	 \item{classes}{class labels of the data}
 	 \item{C}{cccd object}
+  \item{plot.circles}{ logical. Plot the circles around the points if TRUE.}
+  \item{dominate.only}{ logical. Only plot the digraph induced by the
+      dominating set.}
+  \item{D}{ a dominating set. Only used if dominate.only is TRUE. If
+         dominate.only is TRUE and D is NULL, then \code{dominate}
+			is called.}
+  \item{vertex.size,vertex.color,vertex.label, dom.color}{parameters controling
+		  the plotting of the vertices. \code{dom.color} is the color
+		  of the vertices in the dominating set.}
+  \item{balls, ball.color}{if \code{balls}=TRUE, the cover is plotted
+        as filled balls, with
+        \code{ball.color} controling their color}.
+  \item{ypch,ycex,ycol}{ parameters for plotting the non-target points.}
+  \item{use.circle.radii}{ logical. Ensure that the circles fit
+      within the plot.}
+  \item{square}{logical. Make the plot square.}
+  \item{xlim,ylim}{if present, these control the plotting region.}
+  \item{\dots}{ arguments passed to \code{plot} or \code{plot.cccd}.}
 }
 \details{
    The class cover catch digraph is a graph with vertices defined by the
@@ -49,6 +75,13 @@ cccd.multiclass.classify(data,C)
 	\item{R}{a vector of radii.}
 	\item{Y}{the y vectors.}
 	\item{layout}{the x vectors.}
+ }
+\note{
+    The plotting assumes the cccd used Euclidean distance, and so the
+	 balls/circles will be Euclidean balls/circles. If the 
+	 method used in the distance was some other metric, you'll have
+	 to plot the balls/circles yourself if you want them to be correct
+	 on the plot.
  }
 \references{
 D.J. Marchette,
@@ -68,7 +101,26 @@ Journal of Classification,
 David J. Marchette, david.marchette@navy.mil
 }
 \seealso{
-\code{\link{ccd}}, \code{\link{rng}}, \code{\link{gg}}
+\code{\link{ccd}}, \code{\link{rng}}, \code{\link{gg}}, \code{\link[proxy]{dist}}
+\code{\link{plot.cccd}}
 }
-\keyword{math}
-\keyword{multivariate}
+\examples{
+set.seed(456330)
+z <- matrix(runif(1000),ncol=2)
+ind <- which(z[,1]<.5 & z[,2]<.5)
+x <- z[ind,]
+y <- z[-ind,]
+g <- cccd(x,y)
+C <- cccd.classifier(x,y)
+z2 <- matrix(runif(1000),ncol=2)
+ind <- which(z2[,1]<.5 & z2[,2]<.5)
+cls <- rep(0,nrow(z2))
+cls[ind] <- 1
+out <- cccd.classify(z2,C)
+sum(out != cls)/nrow(z2)
+\dontrun{
+plot(g,plot.circles=TRUE,dominate.only=TRUE)
+points(z2,col=2*(1-cls)+1,pch=20)
+}
+}
+\keyword{graphs}

@@ -53,8 +53,8 @@ y <- matrix(runif(100,-2,2),ncol=2)
 G <- cccd(x,y)
 D <- dominate(G)
 \dontrun{
-plotCCCD(G,balls=T,D=D)
+plot(G,balls=TRUE,D=D)
 }
 
 }
-\keyword{ math }
+\keyword{ graphs }

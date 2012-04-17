@@ -1,4 +1,4 @@
-ccd.nonsequential <- function(data,m=1)
+ccd.nonsequential <- function(data,m=1,method=NULL)
 {
    r <- rep(0,nrow(data))
    stats <- rep(0,nrow(data))
@@ -6,8 +6,8 @@ ccd.nonsequential <- function(data,m=1)
 	fs <- matrix(0,ncol=nrow(data),nrow=nrow(data))
 	rx <- matrix(0,ncol=nrow(data),nrow=nrow(data))
 	for(i in 1:length(r)){
-	   y <- data[i,]
-	   d <- as.vector(pdistxy(data,y))
+	   y <- data[i,,drop=FALSE]
+	   d <- as.vector(dist(data,y,method=method))
 	   od <- sort(d)
 	   f <- (1:nrow(data))/nrow(data)
 	   dif <- f-m*(od/max(od))^2
@@ -20,7 +20,7 @@ ccd.nonsequential <- function(data,m=1)
    n <- nrow(data)
    A <- matrix(0,nrow=n,ncol=n)
    for(i in 1:n){
-      A[i,] <- pdist(data[i,],data,d=ncol(data))<r[i] 
+      A[i,] <- dist(data[i,,drop=FALSE],data,method=method)<r[i] 
    }
 	diag(A) <- 0
 	out <- graph.adjacency(A,mode="Directed")
@@ -30,10 +30,11 @@ ccd.nonsequential <- function(data,m=1)
 	out$walks <- walks
 	out$fs <- fs
 	out$m <- m
+	out$method <- method
 	out
 }
 
-ccd.sequential <- function(data,m=1,alpha=0.05)
+ccd.sequential <- function(data,m=1,alpha=0.05,method=NULL)
 {
    n <- nrow(data)
    r <- rep(0,n)
@@ -43,8 +44,8 @@ ccd.sequential <- function(data,m=1,alpha=0.05)
 	fs <- matrix(0,ncol=n,nrow=n)
 	rx <- matrix(0,ncol=n,nrow=n)
 	for(i in 1:n){
-	   y <- data[i,]
-	   d <- as.vector(pdistxy(data,y))
+	   y <- data[i,,drop=FALSE]
+	   d <- as.vector(dist(data,y,method=method))
 	   od <- sort(d)
 	   f <- (1:nrow(data))/nrow(data)
 	   dif <- f-m*(od/max(od))^2
@@ -58,7 +59,7 @@ ccd.sequential <- function(data,m=1,alpha=0.05)
 	}
    A <- matrix(0,nrow=n,ncol=n)
    for(i in 1:n){
-      A[i,] <- pdist(data[i,],data,d=ncol(data))<r[i] 
+      A[i,] <- dist(data[i,,drop=FALSE],data,method=method)<r[i] 
    }
 	diag(A) <- 0
 	out <- graph.adjacency(A,mode="Directed")
@@ -69,19 +70,23 @@ ccd.sequential <- function(data,m=1,alpha=0.05)
 	out$fs <- fs
 	out$m <- m
 	out$alpha <- alpha
+	out$method <- method
 	out
 }
 
-ccd <- function(data,m=1,alpha=0.05,sequential=TRUE)
+ccd <- function(data,m=1,alpha=0.05,sequential=TRUE,method=NULL)
 {
    if(sequential)
-	   z <- ccd.sequential(data,m,alpha)
+	   z <- ccd.sequential(data,m,alpha,method=method)
    else
-	   z <- ccd.nonsequential(data,m)
+	   z <- ccd.nonsequential(data,m,method=method)
+	class(z) <- c("ccd",class(z))
    z
 }
 
-plotCCD <- function(g,...)
+plot.ccd <- function(x,...)
 {
-	plotCCCD(g)
+	g <- x
+	class(g) <- c("cccd","igraph")
+	plot(g,...)
 }
