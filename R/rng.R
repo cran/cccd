@@ -7,9 +7,8 @@ rng <- function(x=NULL,dx=NULL,r=1, method=NULL,usedeldir=TRUE)
    n <- nrow(dx)
    A <- matrix(0,nrow=n,ncol=n)
    if(is.vector(x)) x <- matrix(x,ncol=1)
-   if(usedeldir && ncol(x)==2 && 
-	   (length(.find.package("deldir",quiet=TRUE))>0)){
-	  require(deldir)
+	if(!require(deldir,quietly=TRUE)) usedeldir <- FALSE
+   if(usedeldir && ncol(x)==2){
 	  del <- deldir(x[,1],x[,2])
 	  for(edge in 1:nrow(del$delsgs)){
 	     i <- del$delsgs[edge,5]

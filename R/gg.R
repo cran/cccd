@@ -1,12 +1,13 @@
 gg <- function(x,r=1,method=NULL,usedeldir=TRUE)
 {
+	if(usedeldir){
+	    if(!require(deldir,quietly=TRUE)) usedeldir <- FALSE
+	}
 	dx <- as.matrix(dist(x,method=method))
    n <- nrow(dx)
    A <- matrix(0,nrow=n,ncol=n)
    if(is.vector(x)) x <- matrix(x,ncol=1)
-   if(usedeldir && (method=="Euclidean" || is.null(method)) && (ncol(x)==2) && 
-	  (length(.find.package("deldir",quiet=TRUE))>0)){
-	  require(deldir)
+   if(usedeldir && (method=="Euclidean" || is.null(method)) && (ncol(x)==2)){
 	  del <- deldir(x[,1],x[,2])
 	  for(edge in 1:nrow(del$delsgs)){
 	    i <- del$delsgs[edge,5]

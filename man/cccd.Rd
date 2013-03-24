@@ -101,7 +101,7 @@ Journal of Classification,
 David J. Marchette, david.marchette@navy.mil
 }
 \seealso{
-\code{\link{ccd}}, \code{\link{rng}}, \code{\link{gg}}, \code{\link[proxy]{dist}}
+\code{\link{ccd}}, \code{\link{rng}}, \code{\link{gg}}, \code{\link[proxy]{dist}},
 \code{\link{plot.cccd}}
 }
 \examples{

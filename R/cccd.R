@@ -84,8 +84,7 @@ plot.cccd <- function(x,...,
 			ylim <- range(c(x[,2],y[,2]))
 		}
 	}
-	if(is.null(D)) D <- dominate(g)+1
-	else D <- D+1
+	if(is.null(D)) D <- dominate(g)
 	col <- rep(vertex.color,n)
 	col[D] <- dom.color
 	vertex.color <- col

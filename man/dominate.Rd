@@ -1,38 +1,23 @@
 \name{dominate}
 \alias{dominate}
-\alias{dominate.greedy}
-\alias{dominate.byR}
-\alias{dominate.systematic}
-\alias{dominate.random.sample}
 \title{ Dominating Sets}
 \description{
    find maximum dominating sets in (di)graphs.
 }
 \usage{
-dominate(g, method = "greedy", verbose = TRUE)
-dominate.greedy(g, weight=NULL)
-dominate.byR(g)
-dominate.random.sample(g)
+dominate(g, method = "greedy")
 }
 \arguments{
   \item{g}{ an adjacency matrix.}
-  \item{method}{ one of "greedy","systematic","random","byR".}
-  \item{weight}{ weight vector.}
-  \item{verbose}{ logical. In the case of systematic, whether to print out
-                  information as it goes.}
+  \item{method}{ one of "greedy","random","byRadius".}
 }
 \details{
    \code{dominate} is the main program which calls the others,
 	as indicated by \code{method}. Greedy is the greedy dominating
-	algorithm. The weight vector is used to break ties: in the case
-	of a tie the vertex with the largest weight is chosen. The
-	"by radius" algorithm uses the vector \code{R} as the criterion
-	in the greedy algorithm, rather than degree. 
-	The random routine simply uses a random weighting instead of weighting
-	by \code{R}. The systematic routine computes a true minimum dominating
-	set, but may take a long time as it is not optimized and uses brute force.
-	It first computes a greedy dominating set to reduce the search, but
-	that's all.
+	algorithm.  In the greedy method ties are broken by first index (a la 
+	\code{which.max}).
+	The byRadius method uses the radii to break ties while
+	the random routine breaks ties randomly.
 }
 \value{
   a vector of vertices corresponding to the dominating set.
