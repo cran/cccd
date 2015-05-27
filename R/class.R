@@ -40,7 +40,7 @@ prune <- function(x,classes,prox="Gabriel",ignore.ties=TRUE,...)
 	else if(mode=="k-Nearest Neighbor")
 		g <- nng(x,...)
 	else if(mode=="Minimum Spanning Tree"){
-		D <- as.matrix(dist(x))
+		D <- as.matrix(proxy::dist(x))
 		n <- vcount(g)
 		A <- matrix(1,nrow=n,ncol=n)
 		diag(A) <- 0

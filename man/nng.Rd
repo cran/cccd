@@ -6,7 +6,8 @@
   (di)graphs.
 }
 \usage{
-nng(x = NULL, dx = NULL, k = 1, mutual = FALSE, method = NULL)
+nng(x = NULL, dx = NULL, k = 1, mutual = FALSE, method = NULL, 
+    use.fnn = FALSE, algorithm = 'cover_tree')
 }
 \arguments{
   \item{x}{ a data matrix. Either x or dx is required}
@@ -15,6 +16,9 @@ nng(x = NULL, dx = NULL, k = 1, mutual = FALSE, method = NULL)
   \item{mutual}{ logical. if true the neighbors must be mutual. See details.}
   \item{method}{ the method used for the distance. 
      See \code{\link[proxy]{dist}}}
+  \item{use.fnn}{logical. If TRUE, \code{get.knn} from the FNN package
+  is used to obtain the neighbors.}
+  \item{algorithm}{see \code{\link[FNN]{get.knn}}.}
 }
 \details{
  a k-nearest neighbor graph is a digraph where each vertex is
@@ -34,7 +38,9 @@ D.J. Marchette, Random Graphs for Statistical Pattern Recognition,
 John Wiley & Sons, 2004.
 }
 \author{ David J. Marchette david.marchette@navy.mil}
-\seealso{\code{\link[proxy]{dist}}
+\seealso{
+\code{\link[proxy]{dist}}
+\code{\link[FNN]{get.knn}}
 }
 
 \examples{

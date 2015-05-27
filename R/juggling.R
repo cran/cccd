@@ -9,7 +9,7 @@ juggle1 <- function(data,classes,sampled=TRUE,
 		d <- ncol(data)
 	}
 	else d <- 1
-	dxx <- as.matrix(dist(data,method=method))
+	dxx <- as.matrix(proxy::dist(data,method=method))
 	n <- nrow(dxx)
 	S <- list(0)
 	R <- list(0)
@@ -51,7 +51,7 @@ juggle1.classify <- function(data,J,tdata,indices)
 	nc <- length(J$S[[1]])
 	out <- matrix(0,nrow=N,ncol=nc)
 	inds <- sort(unique(unlist(J$S)))
-	d <- as.matrix(dist(data,tdata[inds,,drop=FALSE],method=J$method))
+	d <- as.matrix(proxy::dist(data,tdata[inds,,drop=FALSE],method=J$method))
 	foo <- matrix(0,nrow=nc,ncol=N)
 	for(i in indices){
 		for(j in 1:nc){
@@ -104,7 +104,7 @@ juggle2 <- function(data,classes,sampled=TRUE,
 		   K <- rbinom(1,d,.5)
 		}
 		vars[[i]] <- sample(1:d,K)
-		dxx <- as.matrix(dist(data[,vars[[i]],drop=FALSE],method=method))
+		dxx <- as.matrix(proxy::dist(data[,vars[[i]],drop=FALSE],method=method))
 		for(j in cls){
 			DXX <- dxx[xindex[[j]],xindex[[j]]]
 			ind <- setdiff(unlist(xindex),xindex[[j]])
@@ -134,7 +134,7 @@ juggle2.classify <- function(data,J,tdata,indices)
 	inds <- sort(unique(unlist(J$S)))
 	foo <- matrix(0,nrow=nc,ncol=N)
 	for(i in indices){
-		d <- as.matrix(dist(data[,J$vars[[i]],drop=FALSE],tdata[inds,J$vars[[i]],drop=FALSE],method=J$method))
+		d <- as.matrix(proxy::dist(data[,J$vars[[i]],drop=FALSE],tdata[inds,J$vars[[i]],drop=FALSE],method=J$method))
 		for(j in 1:nc){
 			if(length(J$S[[i]][[j]])>1)
 				if(N==1)

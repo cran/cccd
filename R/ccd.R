@@ -7,7 +7,7 @@ ccd.nonsequential <- function(data,m=1,method=NULL)
 	rx <- matrix(0,ncol=nrow(data),nrow=nrow(data))
 	for(i in 1:length(r)){
 	   y <- data[i,,drop=FALSE]
-	   d <- as.vector(dist(data,y,method=method))
+	   d <- as.vector(proxy::dist(data,y,method=method))
 	   od <- sort(d)
 	   f <- (1:nrow(data))/nrow(data)
 	   dif <- f-m*(od/max(od))^2
@@ -20,7 +20,7 @@ ccd.nonsequential <- function(data,m=1,method=NULL)
    n <- nrow(data)
    A <- matrix(0,nrow=n,ncol=n)
    for(i in 1:n){
-      A[i,] <- dist(data[i,,drop=FALSE],data,method=method)<r[i] 
+      A[i,] <- proxy::dist(data[i,,drop=FALSE],data,method=method)<r[i] 
    }
 	diag(A) <- 0
 	out <- graph.adjacency(A,mode="Directed")
@@ -45,7 +45,7 @@ ccd.sequential <- function(data,m=1,alpha=0.05,method=NULL)
 	rx <- matrix(0,ncol=n,nrow=n)
 	for(i in 1:n){
 	   y <- data[i,,drop=FALSE]
-	   d <- as.vector(dist(data,y,method=method))
+	   d <- as.vector(proxy::dist(data,y,method=method))
 	   od <- sort(d)
 	   f <- (1:nrow(data))/nrow(data)
 	   dif <- f-m*(od/max(od))^2
@@ -59,7 +59,7 @@ ccd.sequential <- function(data,m=1,alpha=0.05,method=NULL)
 	}
    A <- matrix(0,nrow=n,ncol=n)
    for(i in 1:n){
-      A[i,] <- dist(data[i,,drop=FALSE],data,method=method)<r[i] 
+      A[i,] <- proxy::dist(data[i,,drop=FALSE],data,method=method)<r[i] 
    }
 	diag(A) <- 0
 	out <- graph.adjacency(A,mode="Directed")

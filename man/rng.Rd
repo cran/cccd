@@ -6,7 +6,8 @@
    the relative neighborhood graph defined by a set of points.
 }
 \usage{
-rng(x=NULL, dx=NULL, r = 1, method = NULL, usedeldir=TRUE)
+rng(x=NULL, dx=NULL, r = 1, method = NULL, usedeldir = TRUE, open = TRUE, k = NA,
+    algorithm = 'cover_tree')
 }
 %- maybe also `usage' for other objects documented here.
 \arguments{
@@ -19,6 +20,13 @@ rng(x=NULL, dx=NULL, r = 1, method = NULL, usedeldir=TRUE)
         and the deldir package is installed, the Delaunay triangularization
 		  is first computed, and this is used to compute the relative
 		  neighborhood graph.}
+  \item{open}{logical. If TRUE, open balls are used in the definition.}
+  \item{k}{If given, \code{get.knn} is used from FNN to approximate
+   the relative neighborhood graph. Only the \code{k} nearest neighbors to
+	the points are used to determine whether an edge should be made or not.
+	This will be much faster and use less memory for large data sets, but 
+	is an approximation unless \code{k} is sufficiently large.}
+  \item{algorithm}{See \code{\link[FNN]{get.knn}}.}
 }
 \details{
    the relative neighborhood graph is defined in terms of balls
@@ -28,6 +36,11 @@ rng(x=NULL, dx=NULL, r = 1, method = NULL, usedeldir=TRUE)
 	an edge between the vertices associated with the observations if 
 	and only if there are no vertices in the lune defined by the
 	intersection of the balls.
+
+	The flag \code{open} should make no difference for most applications,
+	but there are very specific cases (see the example section below)
+	where setting it to be TRUE will give the wrong answer (thanks to
+	Luke Mathieson for pointing this out to me).
 }
 \value{
 	an object of class igraph, with the additional attributes
@@ -53,6 +66,7 @@ John Wiley & Sons, 2004.
 
 \seealso{\code{\link{gg}},\code{\link{cccd}},\code{\link{ccd}},
 \code{\link[proxy]{dist}}
+\code{\link[FNN]{get.knn}}
 }
 
 \examples{
@@ -62,6 +76,15 @@ g <- rng(x)
 \dontrun{
 plot(g)
 }
+
+## Example using 'open':
+g <- graph.full(5,directed=FALSE)
+
+g1 <- rng(x=get.adjacency(g,sparse=FALSE),open=TRUE)
+ecount(g1)
+g2 <- rng(x=get.adjacency(g,sparse=FALSE),open=FALSE)
+graph.isomorphic(g2,g)
+
 
 }
 \keyword{ graphs }

@@ -5,23 +5,26 @@
    find maximum dominating sets in (di)graphs.
 }
 \usage{
-dominate(g, method = "greedy")
+dominate(g, method = "greedy",proportion=1.0)
 }
 \arguments{
   \item{g}{ an adjacency matrix.}
-  \item{method}{ one of "greedy","random","byRadius".}
+  \item{method}{ one of "greedy","random","byRadius", "greedyProportion".}
+  \item{proportion}{ proportion of points to cover.}
 }
 \details{
    \code{dominate} is the main program which calls the others,
 	as indicated by \code{method}. Greedy is the greedy dominating
 	algorithm.  In the greedy method ties are broken by first index (a la 
-	\code{which.max}).
+	\code{which.max}). 
 	The byRadius method uses the radii to break ties while
 	the random routine breaks ties randomly.
+	If \code{proportion} is given,
+	the algorithm stops 
+	after \code{proportion} points are covered.
 }
 \value{
   a vector of vertices corresponding to the dominating set.
-  Note: just like the vertex labels in igraph, these are 0-based.
 }
 \references{ 
 T.W. Haynes, S.T. Hedetniemi and P.J. Slater,

@@ -7,6 +7,7 @@
 \alias{cccd.multiclass.classifier}
 \alias{cccd.multiclass.classify}
 \alias{plot.cccd}
+\alias{plot.cccdClassifier}
 \title{
 Class Cover Catch Digraph
 }
@@ -14,12 +15,13 @@ Class Cover Catch Digraph
 Constructs a class cover catch digraph from points or interpoint distance matrices.
 }
 \usage{
-cccd(x = NULL, y = NULL, dxx = NULL, dyx = NULL, method = NULL)
+cccd(x = NULL, y = NULL, dxx = NULL, dyx = NULL, method = NULL, 
+     k = NA, algorithm = 'cover_tree')
 cccd.rw(x=NULL,y=NULL,dxx=NULL,dyx=NULL,method=NULL,m=1,d=2)
-cccd.classifier(x,y,method=NULL)
+cccd.classifier(x,y,dom.method='greedy',proportion=1,...)
 cccd.classify(data, C,method=NULL)
 cccd.classifier.rw(x,y,m=1,d=2)
-cccd.multiclass.classifier(data, classes)
+cccd.multiclass.classifier(data, classes, dom.method='greedy',proportion=1,...)
 cccd.multiclass.classify(data,C,method=NULL)
 \method{plot}{cccd}(x, ..., plot.circles = FALSE, dominate.only = FALSE, 
           D = NULL, vertex.size = 2, vertex.label = NA, 
@@ -27,6 +29,8 @@ cccd.multiclass.classify(data,C,method=NULL)
 			 ypch = 20, ycex = 1.5, ycol = 2, 
 			 use.circle.radii = FALSE, balls = FALSE, 
 			 ball.color = gray(0.8), square = FALSE, xlim, ylim)
+\method{plot}{cccdClassifier}(x, ..., xcol=1,ycol=2,xpch=20,ypch=xpch,
+                                balls=FALSE,add=FALSE)
 }
 \arguments{
     \item{x,y}{
@@ -40,6 +44,15 @@ cccd.multiclass.classify(data,C,method=NULL)
     }
   \item{method}{ the method used for the distance. 
      See \code{\link[proxy]{dist}}.}
+  \item{dom.method,proportion}{ the method used for the domination set 
+  computation, and the proportion of points required to dominate.  
+  See \code{\link{dominate}}.}
+  \item{k}{If given, \code{get.knn} is used from FNN to approximate
+   the class cover catch graph. Each x covers no more than the \code{k} 
+	nearest neighbors to it.
+	This will be much faster and use less memory for large data sets, but 
+	is an approximation unless \code{k} is sufficiently large.}
+  \item{algorithm}{See \code{\link[FNN]{get.knn}}.}
 	 \item{m}{slope of the null hypothesis curve}
 	 \item{data}{data to be classified}
 	 \item{d}{dimension of the data}
@@ -56,25 +69,45 @@ cccd.multiclass.classify(data,C,method=NULL)
 		  of the vertices in the dominating set.}
   \item{balls, ball.color}{if \code{balls}=TRUE, the cover is plotted
         as filled balls, with
-        \code{ball.color} controling their color}.
+        \code{ball.color} controling their color. In the cass of
+		  \code{cccdClassifier}, \code{balls} can be "x" or "y" indicating
+		  that only one of the balls should be plotted.}
   \item{ypch,ycex,ycol}{ parameters for plotting the non-target points.}
+  \item{xpch,xcol}{parameters for plotting the first class points.}
+  \item{add}{logical. Should the classifier plot be added to an existing plot?}
   \item{use.circle.radii}{ logical. Ensure that the circles fit
       within the plot.}
   \item{square}{logical. Make the plot square.}
   \item{xlim,ylim}{if present, these control the plotting region.}
-  \item{\dots}{ arguments passed to \code{plot} or \code{plot.cccd}.}
+  \item{\dots}{ arguments passed to \code{cccd} or \code{plot}.}
 }
 \details{
    The class cover catch digraph is a graph with vertices defined by the
 	points of \code{x} and edges defined according to the balls
 	\eqn{B(x,d(x,Y))}. There is an edge between vertices
-	\eqn{x_1,x_2} if \eqn{x_2\in B(x_1,d(x_1,Y))}.
+	\eqn{x_1,x_2} if \eqn{x_2\in B(x_1,d(x_1,Y))}. If \code{dyx} is not
+	given and the method is 'euclidean', then \code{get.knnx} is used to
+	find the nearest \code{y} to each x. If \code{k} is given, only
+	the \code{k} nearest neighbors to each point are candidates for
+	covering. Thus the cccd will be approximate, but the computation will
+	(generally) be faster. Since \code{get.knn} uses Euclidean distance,
+	these choices will only be valid for this distance metric.
+	Since the graph will tend to be larger than
+	otherwise, the dominating set computation will be slower, so one
+	should trade-off speed of calculation, approximation, and the 
+	\code{proportion} option to the dominating set (which can make that
+	calculation faster at the cost of returning a subset of the dominating
+	set).
+
 }
 \value{
    an object of class igraph. In addition, it contains the attributes:
 	\item{R}{a vector of radii.}
 	\item{Y}{the y vectors.}
 	\item{layout}{the x vectors.}
+	In the case of the classifier, the attributes are:
+	\item{Rx,Ry}{vectors of radii.}
+	\item{Cx,Cy}{the ball centers.}
  }
 \note{
     The plotting assumes the cccd used Euclidean distance, and so the
@@ -102,7 +135,8 @@ David J. Marchette, david.marchette@navy.mil
 }
 \seealso{
 \code{\link{ccd}}, \code{\link{rng}}, \code{\link{gg}}, \code{\link[proxy]{dist}},
-\code{\link{plot.cccd}}
+\code{\link[FNN]{get.knn}}
+\code{\link{dominate}}
 }
 \examples{
 set.seed(456330)
