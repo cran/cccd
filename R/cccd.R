@@ -1,5 +1,11 @@
 cccd <- function(x=NULL,y=NULL,dxx=NULL,dyx=NULL,method=NULL,k=NA,algorithm='cover_tree')
 {
+	if(!is.null(x) && is.vector(x)){
+		x <- matrix(x,nrow=1)
+	}
+	if(!is.null(y) && is.vector(y)){
+		y <- matrix(y,nrow=1)
+	}
 	if(is.null(dyx) && (is.null(method) || method=='euclidean')){
 	   dyx <- get.knnx(y,x,k=1,algorithm=algorithm)
 		R <- dyx$nn.dist[,1]
@@ -16,7 +22,7 @@ cccd <- function(x=NULL,y=NULL,dxx=NULL,dyx=NULL,method=NULL,k=NA,algorithm='cov
 		}
 		M <- matrix(as.integer(dxx<R),length(R))
 		diag(M) <- 0
-		g <- graph.adjacency(M,mode="directed")
+		g <- graph_from_adjacency_matrix(M,mode="directed")
 	} else {
 		if(is.null(x) || is.null(y)) stop("x and y must not be null")
 		k <- min(k,nrow(y))
@@ -29,17 +35,13 @@ cccd <- function(x=NULL,y=NULL,dxx=NULL,dyx=NULL,method=NULL,k=NA,algorithm='cov
 		            rbind(rep(i, length(a)), dxx$nn.index[i,a])
 					}))
 		if(is.null(out)){
-			g <- graph.empty(n=nrow(x),directed=TRUE)
+			g <- make_empty_graph(n=nrow(x),directed=TRUE)
 		} else {
 			edges <- matrix(out,nrow=2)
-			g <- graph(edges,n=nrow(x),directed=TRUE)
+			g <- make_graph(edges=edges,n=nrow(x),directed=TRUE)
 		}
 	}
 	g$R <- R
-	if(is.vector(x) || (dim(x)==1)) {
-		x <- cbind(x,rep(0,length(x)))
-		y <- cbind(y,rep(0,length(y)))
-	}
 	g$layout <- x
 	g$Y <- y
 	g$method <- method
@@ -66,7 +68,7 @@ cccd.rw <- function(x=NULL,y=NULL,dxx=NULL,dyx=NULL,method=NULL,m=1,d=2)
 	}
 	M <- matrix(as.integer(dxx<R),length(R))
 	diag(M) <- 0
-	g <- graph.adjacency(M,mode="directed")
+	g <- graph_from_adjacency_matrix(M,mode="directed")
 	g$R <- R
 	g$layout <- x
 	g$Y <- y

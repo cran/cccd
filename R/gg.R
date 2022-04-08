@@ -52,7 +52,7 @@ gg <- function(x,r=1,method=NULL,usedeldir=TRUE,open=TRUE,k=NA,algorithm='cover_
 		  } 
    } 
 	diag(A) <- 0
-	g <- graph.adjacency(A,mode="undirected")
+	g <- graph_from_adjacency_matrix(A,mode="undirected")
   } else {
 	  k <- min(k,n-1)
 	  dx <- get.knn(x,k=k,algorithm=algorithm)
@@ -74,7 +74,7 @@ gg <- function(x,r=1,method=NULL,usedeldir=TRUE,open=TRUE,k=NA,algorithm='cover_
 			  }
 		  }
 	  }
-	  g <- simplify(graph(edges,n=n,directed=FALSE))
+	  g <- simplify(make_graph(edges,n=n,directed=FALSE))
   }
 	g$layout <- x
 	g$r <- r

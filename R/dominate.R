@@ -17,7 +17,7 @@ dominate.greedy <- function(g,weight=NULL,proportion=1.0)
 		covered[i] <- 1
       S <- c(S,i)
       A[,covered>0] <- 0
-		h <- graph.adjacency(A,mode="directed")
+		h <- graph_from_adjacency_matrix(A,mode="directed")
       od <- degree(h,mode="out")+1-covered
    }
    S

@@ -31,7 +31,7 @@ juggle1 <- function(data,classes,sampled=TRUE,
 			rx <- apply(DYX,2,min)
 			A <- matrix(as.integer(DXX<rx),nrow=nrow(DXX))
 			diag(A) <- 0
-			Gx <- graph.adjacency(A,mode="directed")
+			Gx <- graph_from_adjacency_matrix(A,mode="directed")
 			sx <- dominate.random.sample(Gx)
 			S[[i]][[j]] <- xindex[[j]][sx]
 			R[[i]][[j]] <- rx[sx]
@@ -112,7 +112,7 @@ juggle2 <- function(data,classes,sampled=TRUE,
 			rx <- apply(DYX,2,min)
 			A <- matrix(as.integer(DXX<rx),nrow=nrow(DXX))
 			diag(A) <- 0
-			Gx <- graph.adjacency(A,mode="directed")
+			Gx <- graph_from_adjacency_matrix(A,mode="directed")
 			sx <- dominate.random.sample(Gx)
 			S[[i]][[j]] <- xindex[[j]][sx]
 			R[[i]][[j]] <- rx[sx]

@@ -23,7 +23,7 @@ ccd.nonsequential <- function(data,m=1,method=NULL)
       A[i,] <- proxy::dist(data[i,,drop=FALSE],data,method=method)<r[i] 
    }
 	diag(A) <- 0
-	out <- graph.adjacency(A,mode="Directed")
+	out <- graph_from_adjacency_matrix(A,mode="directed")
 	out$R <- r
 	out$stats <- stats
 	out$layout <- data
@@ -62,7 +62,7 @@ ccd.sequential <- function(data,m=1,alpha=0.05,method=NULL)
       A[i,] <- proxy::dist(data[i,,drop=FALSE],data,method=method)<r[i] 
    }
 	diag(A) <- 0
-	out <- graph.adjacency(A,mode="Directed")
+	out <- graph_from_adjacency_matrix(A,mode="directed")
 	out$R <- r
 	out$stats <- stats
 	out$layout <- data

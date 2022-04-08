@@ -50,7 +50,7 @@ rng <- function(x=NULL,dx=NULL,r=1, method=NULL,usedeldir=TRUE,open=TRUE,k=NA,
 		  }
 		}
 		diag(A) <- 0
-		out <- graph.adjacency(A,mode="undirected")
+		out <- graph_from_adjacency_matrix(A,mode="undirected")
 	} else {
 	  if(is.null(x)) stop("x must not be null")
 	  n <- nrow(x)
@@ -79,7 +79,7 @@ rng <- function(x=NULL,dx=NULL,r=1, method=NULL,usedeldir=TRUE,open=TRUE,k=NA,
 			  }
 		  }
 	  }
-	  out <- simplify(graph(edges,n=n,directed=FALSE))
+	  out <- simplify(make_graph(edges=edges,n=n,directed=FALSE))
 	}
 	if(!is.null(x)){
 		out$layout <- x

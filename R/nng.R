@@ -13,12 +13,12 @@ nng <- function(x=NULL,dx=NULL,k=1,mutual=FALSE,method=NULL,
 			a <- apply(edges,2,sort)
 			b <- which(duplicated(a,MARGIN=2))
 			if(length(b)==0){
-			   out <- graph.empty(n,directed=FALSE)
+			   out <- make_empty_graph(n,directed=FALSE)
 			} else {
-				out <- graph(edges[,b,drop=FALSE],n=n,directed=FALSE)
+				out <- make_graph(edges=edges[,b,drop=FALSE],n=n,directed=FALSE)
 			}
 		} else {
-			out <- graph(edges,n=n,directed=TRUE)
+			out <- make_graph(edges=edges,n=n,directed=TRUE)
 		}
 	} else {
 		if(is.null(dx)) {
@@ -39,9 +39,9 @@ nng <- function(x=NULL,dx=NULL,k=1,mutual=FALSE,method=NULL,
 		  }
 		}
 		if(mutual)
-			out <- graph.adjacency(A,mode="undirected")
+			out <- graph_from_adjacency_matrix(A,mode="undirected")
 		else
-			out <- graph.adjacency(A,mode="directed")
+			out <- graph_from_adjacency_matrix(A,mode="directed")
 	}
 	out$k <- k
 	out$mutual <- mutual

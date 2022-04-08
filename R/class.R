@@ -44,7 +44,7 @@ prune <- function(x,classes,prox="Gabriel",ignore.ties=TRUE,...)
 		n <- vcount(g)
 		A <- matrix(1,nrow=n,ncol=n)
 		diag(A) <- 0
-		h <- graph.adjacency(A,mode="undirected")
+		h <- graph_from_adjacency_matrix(A,mode="undirected")
 		w <- rep(0,choose(n,2))
 		k <- 1
 		for(i in 1:(n-1)){
